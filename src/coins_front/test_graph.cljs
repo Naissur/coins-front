@@ -9,5 +9,5 @@
    {:x 1 :t (+ initial-date (* 2 dt))}
    {:x 2 :t (+ initial-date (* 3 dt))}
    {:x 4 :t (+ initial-date (* 4 dt))}
-   {:x 6 :t (+ initial-date (* 5 dt))}
-   {:x 8 :t (+ initial-date (* 6 dt))}])
+   {:x 8 :t (+ initial-date (* 5 dt))}
+   {:x 10 :t (+ initial-date (* 6 dt))}])
