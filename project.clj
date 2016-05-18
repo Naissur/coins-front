@@ -25,7 +25,7 @@
 
                 ;; If no code is to be run, set :figwheel true for continued automagical reloading
                 :figwheel {:on-jsload "coins-front.core/on-js-reload"
-                           :websocket-host "192.168.1.194"}
+                           :websocket-host "localhost"}
 
                 :compiler {:main coins-front.core
                            :asset-path "js/compiled/out"
