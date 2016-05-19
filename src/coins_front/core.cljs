@@ -1,18 +1,12 @@
 (ns coins-front.core
   (:require 
     [reagent.core :as r]
-    [coins-front.date-utils :as date-utils]
-    [coins-front.components.graph-view :as graph])) 
+    [coins-front.components.app :as app])) 
 
 (enable-console-print!)
 
 
-
-(defn app []
-  [:div
-   [graph/graph-view []] ])
-
-(r/render [app]
+(r/render [app/app]
           (js/document.getElementById "app"))
 
 

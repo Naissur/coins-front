@@ -3,7 +3,7 @@
     [cljs.core :as core]
     [coins-front.math-utils :as math]
     [coins-front.date-utils :as date]
-    [coins-front.test-graph :as tg]))
+    [coins-front.event-utils :as events]))
 
 
 (def width 600)
@@ -46,19 +46,25 @@
 (defn points-plotter [width height start-date end-date start-x end-x color graph]
   (map (partial graph-point width height start-date end-date start-x end-x color) graph)) 
 
-(defn graph-view []
-  [:svg {:width width :height height}
+(defn graph-view [width height start-date end-date start-x end-x color 
+                  on-mouse-down on-mouse-up on-mouse-move
+                  graph]
+  [:svg {:width width :height height 
+         :on-mouse-down (comp on-mouse-down events/cast-mouse-ev)
+         :on-mouse-up (comp on-mouse-up events/cast-mouse-ev)
+         :on-mouse-move (comp on-mouse-move events/cast-mouse-ev)}
+
    [:rect {:x 0 :y 0 :width width :height height :stroke "#999" :fill "transparent"}] 
    (line-plotter 
      width height 
-     tg/initial-date (+ tg/initial-date (* 7 tg/dt))
-     0 10 
-     "green" tg/test-graph)
+     start-date end-date
+     start-x end-x
+     color graph)
    (points-plotter 
      width height 
-     tg/initial-date (+ tg/initial-date (* 7 tg/dt))
-     0 10 
-     "green" tg/test-graph)])
+     start-date end-date
+     start-x end-x
+     color graph)])
 
 
 

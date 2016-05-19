@@ -10,7 +10,7 @@ tmux rename-window 'org'
 # Build window
 tmux new-window -n build -t coins-front
 tmux send-keys 'clear' 'Enter'
-tmux send-keys 'lein figwheel'
+tmux send-keys 'lrlwrap lein figwheel'
 tmux send-keys 'Enter'
 
 # Source window
@@ -23,6 +23,12 @@ tmux send-keys 'Enter'
 # Directory window
 tmux new-window -n dir -t coins-front
 tmux send-keys 'clear' 'Enter'
+
+
+# Docs window
+tmux new-window -n doc -t coins-front
+tmux send-keys 'clear' 'Enter'
+tmux send-keys 'rlwrap lein repl'
 tmux send-keys 'Enter'
 
 
