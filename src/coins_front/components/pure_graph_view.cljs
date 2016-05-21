@@ -6,9 +6,6 @@
     [coins-front.event-utils :as events]))
 
 
-(def width 600)
-(def height 400)
-
 
 (defn graph-point [params point]
   (let [{:keys [color]} params
@@ -45,7 +42,7 @@
     (map (partial graph-point {:color color}) points)))
 
 
-(defn get-point [width heigth start-date end-date start-x end-x color point]
+(defn get-point [width height start-date end-date start-x end-x color point]
   (let [t (:t point) 
         x (:x point)
         px (math/linear-transform start-date end-date 0 width t)

@@ -4,7 +4,7 @@
 (def initial-date 1463534536000)
 (def dt (* 60 1000))                  ;; hour
 
-(def t-range (range 0 10 0.2))
+(def t-range (range 0 10 0.3))
 
 (def test-graph 
   (map (fn [t] 
