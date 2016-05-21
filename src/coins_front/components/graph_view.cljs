@@ -61,7 +61,7 @@
 
 (defn graph-view [params graph]
   (let 
-    [{:keys [width height graph-color]} params
+    [{:keys [width height graph-color graph-type]} params
      {:keys [start-x end-x start-date end-date]} @view-state]
 
     [:div
@@ -71,7 +71,8 @@
        :end-date end-date
        :start-x start-x
        :end-x end-x
-       :color graph-color
+       :graph-color graph-color
+       :graph-type graph-type
        :on-mouse-ev (partial on-mouse-ev width height)}
       graph]]))
 

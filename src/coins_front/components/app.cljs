@@ -25,6 +25,7 @@
     [:div
      [graph-view
       {:width width :height height 
-       :graph-color (:color val) }
+       :graph-color (:color val) 
+       :graph-type :step}
       (:graph val)]]))
 
