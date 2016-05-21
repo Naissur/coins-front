@@ -68,8 +68,8 @@
 
 (defn get-point [width height start-date end-date start-x end-x point]
   (let [ [t x] point 
-        px (math/linear-transform start-date end-date 0 width t)
-        py (math/linear-transform start-x end-x 0 height x)]
+        px (int (math/linear-transform start-date end-date 0 width t))
+        py (int (math/linear-transform start-x end-x 0 height x))]
     {:x px :y py :key t})) 
 
 
@@ -89,6 +89,9 @@
       (if (nil? last-before) [] [last-before])
       (:in groups)
       (if (nil? first-after) [] [first-after]))))
+
+
+
 
 (def graph-types-renderers
   {:points points-plotter
