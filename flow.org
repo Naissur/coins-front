@@ -1,9 +1,18 @@
 * Plan file for coins-front
 ** graph plotter
    - [X] basic plotting
+   - [X] plot types
+         - [X] types
+         - [X] graph-type -> plot-type
+               
+   - [X] graph data as a sorted-hash { time : value }, with merging
+
+   - [X] implement zoom
+
+   - [ ] Proper events system
    - [ ] optimized plotting (with translate i/o x=... y=...)
-   - [ ] multiple graphs with plotting params
-         - [ ] :type :color
+   - [X] multiple graphs with plotting params
+         - [X] :type :color
 
 
 ** data fetcher

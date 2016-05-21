@@ -1,6 +1,6 @@
 (ns coins-front.components.pure-graph-view
   (:require 
-    [cljs.core :refer [partition]]
+    [cljs.core :refer [partition keys]]
     [coins-front.math-utils :as math]
     [coins-front.date-utils :as date]
     [coins-front.event-utils :as events]))
@@ -66,9 +66,8 @@
     (map (partial graph-point {:color color}) points)))
 
 
-(defn get-point [width height start-date end-date start-x end-x color point]
-  (let [t (:t point) 
-        x (:x point)
+(defn get-point [width height start-date end-date start-x end-x point]
+  (let [ [t x] point 
         px (math/linear-transform start-date end-date 0 width t)
         py (math/linear-transform start-x end-x 0 height x)]
     {:x px :y py :key t})) 
@@ -84,24 +83,25 @@
          [width height
           start-date end-date
           start-x end-x
-          graph-color 
-          graph-type
+          plot-type
           on-mouse-ev]} params
 
-        points (map (partial get-point width height start-date end-date start-x end-x graph-color) graph)
-        handle-mouse-ev (comp on-mouse-ev events/cast-mouse-ev)]
+        graph-color (:color graph)
 
+        points (map (partial get-point width height start-date end-date start-x end-x) (:points graph))
+        handle-mouse-ev (comp on-mouse-ev events/cast-ev)]
 
     [:svg {:width width :height height 
            :on-mouse-down handle-mouse-ev
            :on-mouse-up handle-mouse-ev
-           :on-mouse-move handle-mouse-ev}
+           :on-mouse-move handle-mouse-ev
+           :on-wheel handle-mouse-ev
+           :on-mouse-leave handle-mouse-ev
+           :on-mouse-enter handle-mouse-ev}
 
      [:rect {:x 0 :y 0 :width width :height height :stroke "#999" :fill "transparent"}] 
 
-     ( (or (graph-types-renderers graph-type) points-plotter) {:color graph-color} points)
-
-     ]))
+     ((or (graph-types-renderers plot-type) points-plotter) {:color graph-color} points)]))
 
 
 

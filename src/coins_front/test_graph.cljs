@@ -4,11 +4,28 @@
 (def initial-date 1463534536000)
 (def dt (* 60 1000))                  ;; hour
 
-(def t-range (range 0 10 0.3))
+
+(def portion-ranges 
+  [(range 0 10 0.5)
+   (range 3 6 0.1)])
+
+(defn mapping-fn [t]
+  [ (+ initial-date (* t dt)) (+ 1 (/ (* t t) 12)) ])
+
+
+(defn get-portion-points [portion-range]
+  ((comp 
+     (partial apply sorted-map)
+     flatten
+     (partial map mapping-fn)) portion-range))
+
+
+
 
 (def test-graph 
-  (map (fn [t] 
-         {:t (+ initial-date (* t dt)) :x (/ (* t t) 10)}) t-range))
+  {:points (apply merge (map get-portion-points portion-ranges))
+
+   :color "orange" })
 
 ;;  [{:x 0 :t initial-date} 
 ;;   {:x 1 :t (+ initial-date (* 2 dt))}

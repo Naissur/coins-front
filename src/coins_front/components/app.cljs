@@ -12,7 +12,7 @@
 (def width 800)
 (def height 400)
 (def initial-state 
-  {:graph tg/test-graph :color "green"})
+  {:graph tg/test-graph})
 
 (set! (.-graph js/window) tg/test-graph)
 
@@ -25,7 +25,6 @@
     [:div
      [graph-view
       {:width width :height height 
-       :graph-color (:color val) 
-       :graph-type :step}
+       :plot-type :step}
       (:graph val)]]))
 
