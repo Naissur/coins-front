@@ -3,13 +3,13 @@
   (:require 
     [cljs.core.async :refer [put! chan <! >! timeout close!]]
     [reagent.core :as r]
-    [coins-front.components.graph-view :as graph]
+    [coins-front.components.pure-graph-view :as graph]
     [coins-front.math-utils :refer [linear-transform]]
     [coins-front.test-graph :as tg]
     [coins-front.event-utils :as events]))
 
 
-(def width 600)
+(def width 800)
 (def height 400)
 (def initial-state 
   {:graph tg/test-graph
@@ -25,9 +25,7 @@
 
 (def ev-chan (chan))
 
-(defn on-mouse-up [e] (put! ev-chan e))
-(defn on-mouse-down [e] (put! ev-chan e))
-(defn on-mouse-move [e] (put! ev-chan e))
+(defn on-mouse-ev [e] (put! ev-chan e))
 
 
 ;; events go-routine
@@ -67,10 +65,13 @@
   (let [val @state]
 
     [:div
-     [graph/graph-view 
-      width height 
-      (:start-date val) (:end-date val) 
-      (:start-x val) (:end-x val) (:color val) 
-      on-mouse-down on-mouse-up on-mouse-move
+     [graph/pure-graph-view 
+      {:width width :height height 
+       :start-date (:start-date val)
+       :end-date (:end-date val)
+       :start-x (:start-x val)
+       :end-x (:end-x val)
+       :color (:color val) 
+       :on-mouse-ev on-mouse-ev}
       (:graph val)]]))
 

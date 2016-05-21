@@ -1,0 +1,10 @@
+* Plan file for coins-front
+** graph plotter
+   - [X] basic plotting
+   - [ ] optimized plotting (with translate i/o x=... y=...)
+   - [ ] multiple graphs with plotting params
+         - [ ] :type :color
+
+
+** data fetcher
+** tying plotter and data fetcher
