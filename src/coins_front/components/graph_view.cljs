@@ -19,16 +19,37 @@
 
 (defonce view-state (r/atom initial-view-state))
 
+(defn merge-view-state [to-merge]
+  (reset! view-state 
+          (merge @view-state to-merge)))
 
 
-;; (reset! view-state (assoc-in @view-state [:start-x] -10))
 
-(def ev-chan (chan))
-(defn on-mouse-ev [width height ev] (put! ev-chan {:width width :height height :ev ev}))
+
+
+(defn get-zoom-deltas [width height initial-start-time initial-end-time mouse-x delta]
+  (let [
+        pointer-time (linear-transform 0 width initial-start-time initial-end-time mouse-x)
+        time-span (- initial-end-time initial-start-time)
+
+        rel-start (/ (- pointer-time initial-start-time) time-span)
+        rel-end (/ (- initial-end-time pointer-time) time-span)
+
+        dt (linear-transform 0 width 0 (- initial-end-time initial-start-time) delta) ]
+
+    {:start-dt (* dt rel-start)
+     :end-dt (* dt rel-end)}))
+
+
 
 
 
 ;; events go-routine
+
+
+(def ev-chan (chan))
+(defn on-mouse-ev [width height ev] (put! ev-chan {:width width :height height :ev ev}))
+
 
 (defn go-drag [initial-start-time initial-end-time drag-start-x drag-start-y ev-chan]
   (go-loop []
@@ -38,50 +59,34 @@
                (do 
                  (let [dx (- (:x ev) drag-start-x)
                        dy (- (:y ev) drag-start-y)
+                       time-span (- initial-end-time initial-start-time)
+                       dt (linear-transform 0 width 0 time-span dx) ]
 
-                       ;; dt = dx * (initial-end-time - initial-start-time) / width 
-
-                       dt (linear-transform 0 width 0 (- initial-end-time initial-start-time) dx) ]
-
-                   (reset! view-state 
-                       (assoc @view-state
-                              :start-date (- initial-start-time dt)
-                              :end-date (- initial-end-time dt)))
-                       (recur)))))))
+                   (merge-view-state {:start-date (- initial-start-time dt)
+                                      :end-date (- initial-end-time dt)})
+                                     (recur)))))))
 
 (go-loop []
-         (let [{:keys [width height ev]} (<! ev-chan)]
+         (let [{:keys [width height ev]} (<! ev-chan)
+               initial-start-time (:start-date @view-state) 
+               initial-end-time (:end-date @view-state) ]
+
            (if (is-wheel-ev ev)
-             (let [
-                   delta (:delta ev)
-                   initial-start-time (:start-date @view-state)
-                   initial-end-time (:end-date @view-state)
+             (let 
+               [{:keys [start-dt end-dt]} (get-zoom-deltas 
+                                            width height 
+                                            initial-start-time initial-end-time 
+                                            (:mouse-x @view-state) (* 2 (:delta ev))) ]
 
-                   pointer-time (linear-transform 0 width initial-start-time initial-end-time (:mouse-x @view-state))
-                   time-span (- initial-end-time initial-start-time)
-
-                   rel-start (/ (- pointer-time initial-start-time) time-span)
-                   rel-end (/ (- initial-end-time pointer-time) time-span)
-
-                   dt (linear-transform 0 width 0 (- initial-end-time initial-start-time) (* 2 delta)) ]
-
-
-             (reset! view-state 
-                 (assoc @view-state
-                        :start-date (- initial-start-time (* rel-start dt))
-                        :end-date (+ initial-end-time (* rel-end dt))))))
+               (merge-view-state {:start-date (- initial-start-time start-dt)
+                                  :end-date (+ initial-end-time end-dt)})))
 
            (if (is-mouse-move-ev ev)
-             (reset! view-state 
-                     (assoc @view-state
-                            :mouse-x (:x ev)
-                            :mouse-y (:y ev))))
+             (merge-view-state { :mouse-x (:x ev)
+                                :mouse-y (:y ev)}))
 
            (if (is-mouse-down-ev ev)
-             (let [initial-start-time (:start-date @view-state)
-                   initial-end-time (:end-date @view-state) ]
-
-               (<! (go-drag initial-start-time initial-end-time (:x ev) (:y ev) ev-chan))))
+             (<! (go-drag initial-start-time initial-end-time (:x ev) (:y ev) ev-chan)))
 
            (recur)))
 
