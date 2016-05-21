@@ -6,7 +6,7 @@
 
 
 (def portion-ranges 
-  [(range 0 10 0.5)
+  [(range 0 10 0.3)
    (range 3 6 0.1)])
 
 (defn mapping-fn [t]

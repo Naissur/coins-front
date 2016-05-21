@@ -73,6 +73,23 @@
     {:x px :y py :key t})) 
 
 
+(defn point-range-pos [start-date end-date point]
+  (let [ [t] point]
+    (if (< t start-date) :before
+      (if (> t end-date) :after
+        :in))))
+
+(defn get-points-in-range  [start-date end-date points]
+  (let
+    [groups (group-by (partial point-range-pos start-date end-date) points)
+     last-before (last (:before groups))
+     first-after (first (:after groups))]
+
+    (concat
+      (if (nil? last-before) [] [last-before])
+      (:in groups)
+      (if (nil? first-after) [] [first-after]))))
+
 (def graph-types-renderers
   {:points points-plotter
    :line line-plotter
@@ -88,7 +105,11 @@
 
         graph-color (:color graph)
 
-        points (map (partial get-point width height start-date end-date start-x end-x) (:points graph))
+        points ((comp
+                  (partial map (partial get-point width height start-date end-date start-x end-x))
+                  (partial get-points-in-range start-date end-date)
+                  ) (:points graph))
+
         handle-mouse-ev (comp on-mouse-ev events/cast-ev)]
 
     [:svg {:width width :height height 

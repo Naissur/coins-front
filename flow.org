@@ -8,9 +8,11 @@
    - [X] graph data as a sorted-hash { time : value }, with merging
 
    - [X] implement zoom
+   - [-] optimized plotting
+         - [X] filter points based on view range
+         - [ ] (?) (with translate i/o x=... y=...)
 
    - [ ] Proper events system
-   - [ ] optimized plotting (with translate i/o x=... y=...)
    - [X] multiple graphs with plotting params
          - [X] :type :color
 
