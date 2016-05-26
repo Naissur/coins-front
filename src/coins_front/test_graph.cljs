@@ -1,4 +1,6 @@
-(ns coins-front.test-graph)
+(ns coins-front.test-graph
+  (:require 
+    [coins-front.graph-utils :refer [merge-points]]))
 
 
 (def initial-date 1463534536000)
@@ -7,10 +9,12 @@
 
 (def portion-ranges 
   [(range 0 10 0.3)
-   (range 3 6 0.1)])
+   (range 3.3 6.3 0.2)])
 
 (defn mapping-fn [t]
-  [ (+ initial-date (* t dt)) (+ 1 (/ (* t t) 12)) ])
+  [ (+ initial-date (* t dt)) (+ 1 (/ (* t t) 12) 
+                                 (* 0.1
+                                 (js/Math.sin (* t 16)))) ])
 
 
 (defn get-portion-points [portion-range]
@@ -23,7 +27,8 @@
 
 
 (def test-graph 
-  {:points (apply merge (map get-portion-points portion-ranges))
+  {:points 
+     (reduce merge-points (map get-portion-points portion-ranges))
 
    :color "orange" })
 

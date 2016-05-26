@@ -3,7 +3,8 @@
     [cljs.core :refer [partition keys]]
     [coins-front.math-utils :as math]
     [coins-front.date-utils :as date]
-    [coins-front.event-utils :as events]))
+    [coins-front.event-utils :as events]
+    [coins-front.graph-utils :refer [get-points-in-range]]))
 
 
 
@@ -71,24 +72,6 @@
         px (int (math/linear-transform start-date end-date 0 width t))
         py (int (math/linear-transform start-x end-x 0 height x))]
     {:x px :y py :key t})) 
-
-
-(defn point-range-pos [start-date end-date point]
-  (let [ [t] point]
-    (if (< t start-date) :before
-      (if (> t end-date) :after
-        :in))))
-
-(defn get-points-in-range  [start-date end-date points]
-  (let
-    [groups (group-by (partial point-range-pos start-date end-date) points)
-     last-before (last (:before groups))
-     first-after (first (:after groups))]
-
-    (concat
-      (if (nil? last-before) [] [last-before])
-      (:in groups)
-      (if (nil? first-after) [] [first-after]))))
 
 
 
